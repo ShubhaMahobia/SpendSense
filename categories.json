@@ -1,0 +1,145 @@
+{
+    "categories": [
+      {
+        "name": "Food & Dining",
+        "subcategories": [
+          "Food Delivery",
+          "Restaurants",
+          "Cafes",
+          "Street Food",
+          "Cloud Kitchen"
+        ]
+      },
+      {
+        "name": "Groceries & Essentials",
+        "subcategories": [
+          "Supermarket",
+          "Local Kirana",
+          "Dairy",
+          "Fruits & Vegetables",
+          "Online Grocery"
+        ]
+      },
+      {
+        "name": "Transport & Travel",
+        "subcategories": [
+          "Ride Hailing",
+          "Fuel",
+          "Public Transport",
+          "Flights",
+          "Trains",
+          "Bus",
+          "Tolls & Parking"
+        ]
+      },
+      {
+        "name": "Shopping",
+        "subcategories": [
+          "E-commerce",
+          "Clothing",
+          "Electronics",
+          "Home & Furniture",
+          "Accessories"
+        ]
+      },
+      {
+        "name": "Bills & Utilities",
+        "subcategories": [
+          "Electricity",
+          "Water",
+          "Gas",
+          "Mobile Recharge",
+          "Broadband",
+          "DTH"
+        ]
+      },
+      {
+        "name": "Subscriptions",
+        "subcategories": [
+          "OTT",
+          "Music",
+          "Software",
+          "News & Magazines"
+        ]
+      },
+      {
+        "name": "Health & Medical",
+        "subcategories": [
+          "Pharmacy",
+          "Doctor Consultation",
+          "Diagnostics",
+          "Health Insurance",
+          "Fitness"
+        ]
+      },
+      {
+        "name": "Education",
+        "subcategories": [
+          "Courses",
+          "Books",
+          "Coaching",
+          "Exams & Fees"
+        ]
+      },
+      {
+        "name": "Personal & Lifestyle",
+        "subcategories": [
+          "Salon & Grooming",
+          "Spa",
+          "Personal Care",
+          "Entertainment",
+          "Events"
+        ]
+      },
+      {
+        "name": "Rent & Housing",
+        "subcategories": [
+          "House Rent",
+          "Maintenance",
+          "Society Charges",
+          "Repairs"
+        ]
+      },
+      {
+        "name": "Financial",
+        "subcategories": [
+          "Loan EMI",
+          "Credit Card Bill",
+          "Insurance Premium",
+          "Investments",
+          "Taxes"
+        ]
+      },
+      {
+        "name": "Transfers",
+        "subcategories": [
+          "Sent to Friend",
+          "Received from Friend",
+          "Family Transfer",
+          "Self Transfer"
+        ]
+      },
+      {
+        "name": "Cash & ATM",
+        "subcategories": [
+          "ATM Withdrawal",
+          "Cash Deposit"
+        ]
+      },
+      {
+        "name": "Business & Work",
+        "subcategories": [
+          "Office Expenses",
+          "Client Payments",
+          "Software Tools"
+        ]
+      },
+      {
+        "name": "Miscellaneous",
+        "subcategories": [
+          "Uncategorized",
+          "Others"
+        ]
+      }
+    ]
+  }

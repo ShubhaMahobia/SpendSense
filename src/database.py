@@ -12,6 +12,7 @@ def init_db():
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             amount REAL,
             transaction_type TEXT,
+            merchant  TEXT,
             category TEXT,
             sub_category TEXT,
             additional_notes TEXT,

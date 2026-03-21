@@ -4,4 +4,6 @@ langchain-google-genai
 python-dotenv
 langchain-core
 fastmcp
-sqlite
+langchain-mcp-adapters
+langchain-openai
+langgraph

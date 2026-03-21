@@ -84,6 +84,7 @@ def get_transactions(
     end_date: Optional[str] = None,
     category: Optional[str] = None,
     sub_category: Optional[str] = None,
+    merchant: Optional[str] = None,
     limit: int = 100
 ):
     conn = get_connection()
@@ -105,8 +106,12 @@ def get_transactions(
         params.append(category)
 
     if sub_category:
-        query += " AND merchant LIKE ?"
+        query += " AND sub_category LIKE ?"
         params.append(f"%{sub_category}%")
+
+    if merchant:
+        query += " AND merchant LIKE ?"
+        params.append(f"%{merchant}%")
 
     query += " ORDER BY timestamp DESC LIMIT ?"
     params.append(limit)

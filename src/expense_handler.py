@@ -3,6 +3,7 @@ import time
 from typing import Literal, Optional
 from fastmcp import FastMCP
 import sqlite3
+import hashlib
 import json
 
 from database import get_connection
@@ -14,6 +15,8 @@ categories_data = {}
 
 with open("categories.json", "r", encoding="utf-8") as f:
     categories_data = json.load(f)
+
+
 
 
 class TransactionSchema(BaseModel):
@@ -39,26 +42,45 @@ def add_expense(txn: TransactionSchema) -> str:
     """Add expense to the database"""
     conn = get_connection()
     cursor = conn.cursor()
+    def hash_string(input_string: str) -> str:
+        # Convert string to bytes
+        encoded = input_string.encode('utf-8')
+        
+        # Create hash object (SHA-256)
+        hash_obj = hashlib.sha256(encoded)
+        
+        # Get hexadecimal representation
+        return hash_obj.hexdigest()    
 
-    cursor.execute("""
-    INSERT INTO transactions (amount,transaction_type,category,merchant,sub_category,additional_notes,timestamp,created_at,updated_at,is_deleted) VALUES (?,?,?,?,?,?,?,?,?,?)
-    
-    
-    """, (
-        txn.amount,
-        txn.transaction_type,
-        txn.category,
-        txn.merchant,
-        txn.sub_category,
-        txn.additional_note,
-        txn.timestamp,
-        time.strftime("%Y-%m-%d %H:%M:%S"),
-        time.strftime("%Y-%m-%d %H:%M:%S"),
-        False
-    ))
+    # Checking Duplicate Entry - 
+    combined_string = f"{txn.amount}{txn.transaction_type}{txn.timestamp}{txn.category}{txn.merchant}"
+    hashed_string = hash_string(combined_string)
 
-    print("ADD_EXPENSE TOOL EXECUTED")
-    print(txn)
+    cursor.execute(
+        "SELECT 1 FROM hashed_tranxn WHERE hashed_string = ? LIMIT 1",
+        (hashed_string,)
+    )
+    exists = cursor.fetchone()
+
+    if exists:
+        return "Duplicate Transaction"
+    else:
+        cursor.execute("""INSERT INTO hashed_tranxn(hashed_string) VALUES (?)""",(hashed_string,))
+        cursor.execute("""
+                INSERT INTO transactions (amount,transaction_type,category,merchant,sub_category,additional_notes,timestamp,created_at,updated_at,is_deleted) VALUES (?,?,?,?,?,?,?,?,?,?)
+                """, (
+                    txn.amount,
+                    txn.transaction_type,
+                    txn.category,
+                    txn.merchant,
+                    txn.sub_category,
+                    txn.additional_note,
+                    txn.timestamp,
+                    time.strftime("%Y-%m-%d %H:%M:%S"),
+                    time.strftime("%Y-%m-%d %H:%M:%S"),
+                    False
+                ))
+
 
     conn.commit()
     return str(cursor.lastrowid)
@@ -133,7 +155,7 @@ def get_total_spending(
     query = """
     SELECT SUM(amount) as total
     FROM transactions
-    WHERE (transaction_type = 'debit' OR transaction_type = 'Expense')
+    WHERE (transaction_type = 'debit')
     AND timestamp >= ?
     AND timestamp <= ?
     """

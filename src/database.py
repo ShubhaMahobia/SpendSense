@@ -24,12 +24,23 @@ def init_db():
         
         """)
 
+        cursor.execute("""
+         CREATE TABLE IF NOT EXISTS hashed_tranxn (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            hashed_string TEXT,
+            created_at TEXT,
+            updated_at TEXT
+        )
+        """)
+
         conn.commit()
 
 def get_connection():
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
+
+
 
 if __name__ == "__main__":
     init_db()

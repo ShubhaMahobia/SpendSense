@@ -79,6 +79,37 @@ def classify_notification(notification_text: str, categories) -> TransactionClas
         - timestamp: string
         - confidence_score: integer (0-100)
 
+        INSTRUCTIONS:
+
+            1. Extract ONLY relevant transaction information.
+
+            2. AMOUNT:
+            - Extract numeric value only
+            - If missing → null
+
+            3. MERCHANT:
+            - Extract person, shop, service, or company
+            - Avoid generic names unless necessary
+
+            4. TRANSACTION TYPE:
+            - debit → paid, spent, sent
+            - credit → received, earned
+
+            5. CATEGORY + SUBCATEGORY:
+            - MUST strictly match from provided categories
+            - Do NOT invent categories
+            - Choose closest match
+
+            6. ADDITIONAL NOTE:
+            - Extract context like purpose
+            - Else "None"
+
+            7. TIMESTAMP:
+            - Convert into: YYYY-MM-DD HH:MM:SS
+            - If missing → null
+
+            ---
+
         If NOT a transaction:
         - isValid = False
 
@@ -188,11 +219,7 @@ async def llm_call(extracted_notification: Dict ):
 async def main_workflow():
     import json
     
-    notification_message = ["Your a/c XXXXX24 debited for payee Chirag Athwani for Rs. 90.00 on 2026-03-17, ref 628944832288.If not you, report to your bank immediately-IOB.",
-                              "Your a/c XXXXX24 debited for payee REKHA SAINI for Rs. 30.00 on 2026-03-12, ref 350146179696.If not you, report to your bank immediately-IOB.",
-                              "Your a/c XXXXX24 debited for payee SHOBHIT MAHOBIA for Rs. 1500.00 on 2026-03-09, ref 757615285538.If not you, report to your bank immediately-IOB.",
-                              "Dear Shubham, your SuperCard 3648 debited for INR 65.00 on 15 Mar 09:03 PM for UPI - 644031279473. To dispute call 18003097986 - Utkarsh SFBL",
-                             ]
+    notification_message = ["Your a/c XXXXX24 debited for payee Chirag Athwani for Rs. 90.00 on 2026-03-17, ref 628944832288.If not you, report to your bank immediately-IOB."]
 
     with open("categories.json", "r", encoding="utf-8") as f:
         categories = json.load(f)
@@ -201,8 +228,6 @@ async def main_workflow():
         extracted_notif = classify_notification(notification_text=msg,categories=categories)
         await llm_call(extracted_notification=extracted_notif)
 
-    
-    print("All Transaction Added successfully")
 
 
 

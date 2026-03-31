@@ -1,0 +1,18 @@
+{
+  "Chirag Athwani": {
+    "category": "Groceries & Essentials",
+    "sub_category": "Local Kirana"
+  },
+  "shobhit": {
+    "category": "Transport & Travel",
+    "sub_category": "Public Transport"
+  },
+  "chirag athwani": {
+    "category": "Groceries & Essentials",
+    "sub_category": "Local Kirana",
+    "type": "business",
+    "source": "user_feedback",
+    "usage_count": 1,
+    "last_used": "2026-03-31"
+  }
+}

@@ -1,0 +1,16 @@
+{
+    "contacts": [
+      {
+        "name": "Rahul",
+        "normalized_name": "rahul",
+        "phone": "+919876543210",
+        "tags": ["friend"]
+      },
+      {
+        "name": "Chirag Kirana",
+        "normalized_name": "chirag kirana",
+        "phone": "+919812345678",
+        "tags": ["shop", "groceries"]
+      }
+    ]
+  }

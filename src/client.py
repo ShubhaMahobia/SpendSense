@@ -10,6 +10,11 @@ from pydantic import BaseModel,Field
 from langchain_core.messages import ToolMessage
 import asyncio
 from langchain_mcp_adapters.client import MultiServerMCPClient
+import json
+import os
+from typing import Dict
+import json
+from datetime import datetime
 
 
 class TransactionClassificationOutput(BaseModel):
@@ -47,6 +52,82 @@ user_info = {
     "UPI" : ["Google Pay", "Phonepe"],
     "Income" : "15000"
 }
+
+def load_contacts():
+    with open("contacts.json", "r") as f:
+        data = json.load(f)
+    return {c["normalized_name"]: c for c in data.get("contacts", [])}
+
+def normalize(name: str) -> str:
+    return name.strip().lower()
+
+def load_merchant_memory():
+    try:
+        with open("merchant_memory.json", "r") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return {}
+def save_merchant_memory(memory):
+    with open("merchant_memory.json", "w") as f:
+        json.dump(memory, f, indent=2)
+
+def ask_user_for_category(merchant: str, from_contacts: bool = False):
+    print("\n----------------------------")
+    print(f"Transaction detected with: {merchant}")
+
+    if from_contacts:
+        print("We found a similar name in your contacts.")
+    
+    print("Please help categorize this transaction:")
+
+    category = input("Enter category (e.g. Food & Dining / Groceries): ")
+    sub_category = input("Enter sub-category: ")
+
+    return category, sub_category
+
+
+def merchant_mapper(extracted_notification: Dict):
+
+    merchant_raw = extracted_notification.get("merchant", "")
+    merchant = normalize(merchant_raw)
+
+    contacts = load_contacts()
+    merchant_memory = load_merchant_memory()
+
+    if merchant in merchant_memory:
+        memory_entry = merchant_memory[merchant]
+
+        extracted_notification["category"] = memory_entry["category"]
+        extracted_notification["sub_category"] = memory_entry["sub_category"]
+
+        return extracted_notification
+
+   
+    if merchant in contacts:
+        category, sub_category = ask_user_for_category(merchant_raw, from_contacts=True)
+    else:
+        category, sub_category = ask_user_for_category(merchant_raw, from_contacts=False)
+
+   
+    extracted_notification["category"] = category
+    extracted_notification["sub_category"] = sub_category
+
+    merchant_memory[merchant] = {
+        "category": category,
+        "sub_category": sub_category,
+        "type": "business",  # can refine later
+        "source": "user_feedback",
+        "usage_count": 1,
+        "last_used": datetime.now().strftime("%Y-%m-%d")
+    }
+
+    save_merchant_memory(merchant_memory)
+
+    return extracted_notification
+
+
+
+
 
 
 
@@ -127,8 +208,9 @@ def classify_notification(notification_text: str, categories) -> TransactionClas
         categories=categories,
     )
     output = structured_model.invoke(rendered_prompt)
-    import json
     return json.loads(output.model_dump_json())
+
+
 
 
 async def llm_call(extracted_notification: Dict ):
@@ -219,14 +301,15 @@ async def llm_call(extracted_notification: Dict ):
 async def main_workflow():
     import json
     
-    notification_message = ["Your a/c XXXXX24 debited for payee Chirag Athwani for Rs. 90.00 on 2026-03-17, ref 628944832288.If not you, report to your bank immediately-IOB."]
+    notification_message = ["Your a/c XXXXX24 debited for payee Chirag Athwani for Rs. 90.00 on 2026-01-12, ref 628944832288.If not you, report to your bank immediately-IOB."]
 
     with open("categories.json", "r", encoding="utf-8") as f:
         categories = json.load(f)
 
     for msg in notification_message:
         extracted_notif = classify_notification(notification_text=msg,categories=categories)
-        await llm_call(extracted_notification=extracted_notif)
+        extracted_notif1 = merchant_mapper(extracted_notification=extracted_notif)
+        await llm_call(extracted_notification=extracted_notif1)
 
 
 

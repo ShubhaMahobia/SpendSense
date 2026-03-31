@@ -1,8 +1,6 @@
-from numbers import Real
 import time
-from typing import Literal, Optional
+from typing import Optional
 from fastmcp import FastMCP
-import sqlite3
 import hashlib
 import json
 
@@ -18,7 +16,6 @@ with open("categories.json", "r", encoding="utf-8") as f:
 
 
 
-
 class TransactionSchema(BaseModel):
     amount: float = Field(description="Amount of transaction")
     transaction_type: str = Field(description="Type of transaction",examples=["debit","credit"])
@@ -30,10 +27,6 @@ class TransactionSchema(BaseModel):
     created_at: str
     updated_at: str
     is_deleted: bool = Field(description="is transaction deleted or not", default=False)
-
-
-
-
 
 
 

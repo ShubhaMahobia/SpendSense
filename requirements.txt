@@ -7,3 +7,4 @@ fastmcp
 langchain-mcp-adapters
 langchain-openai
 langgraph
+psycopg2
